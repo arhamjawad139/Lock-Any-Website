@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lock Any Website - Firefox Extension</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            cyan: '#00f2fe',
+                            violet: '#7928ca',
+                            purple: '#4c1d95',
+                            dark: '#0a0d14',
+                            card: '#121723',
+                            border: 'rgba(255, 255, 255, 0.08)'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif']
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glitch': 'glitch 1s linear infinite',
+                        'border-glow': 'borderGlow 4s linear infinite'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: 0.4, transform: 'scale(1)' },
+                            '50%': { opacity: 0.8, transform: 'scale(1.05)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' }
+                        },
+                        borderGlow: {
+                            '0%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                            '100%': { 'background-position': '0% 50%' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-brand-dark text-slate-200 antialiased selection:bg-brand-cyan selection:text-black">
+
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glass-card bg-opacity-80 border-b border-brand-border backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-violet to-brand-cyan p-0.5 flex items-center justify-center shadow-lg shadow-brand-cyan/20 group-hover:scale-105 transition-transform">
+                    <div class="w-full h-full bg-brand-dark rounded-[10px] flex items-center justify-center">
+                        <i class="fa-solid fa-lock text-brand-cyan text-lg group-hover:rotate-12 transition-transform"></i>
+                    </div>
+                </div>
+                <span class="font-heading font-bold text-xl tracking-tight text-white">
+                    Lock Any <span class="gradient-text">Website</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#features" class="text-slate-300 hover:text-brand-cyan transition-colors">Features</a>
+                <a href="#how-it-works" class="text-slate-300 hover:text-brand-cyan transition-colors">How It Works</a>
+                <a href="#playground" class="text-slate-300 hover:text-brand-cyan transition-colors">Interactive Demo</a>
+                <a href="#faq" class="text-slate-300 hover:text-brand-cyan transition-colors">FAQ</a>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="hidden md:flex items-center space-x-4">
+                <a href="#download" class="gradient-border-btn inline-block">
+                    <div class="bg-brand-dark hover:bg-opacity-90 px-5 py-2.5 rounded-full text-sm font-semibold flex items-center space-x-2 text-white transition-all">
+                        <i class="fa-brands fa-firefox-browser text-orange-500 text-lg"></i>
+                        <span>Add to Firefox</span>
+                        <span class="bg-brand-cyan/10 text-brand-cyan text-xs px-2 py-0.5 rounded-full border border-brand-cyan/30">Free</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-white focus:outline-none p-2">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden border-b border-brand-border bg-brand-dark/95 backdrop-blur-xl px-4 pt-2 pb-6 space-y-4">
+            <a href="#features" class="block py-2 text-slate-300 hover:text-brand-cyan font-medium">Features</a>
+            <a href="#how-it-works" class="block py-2 text-slate-300 hover:text-brand-cyan font-medium">How It Works</a>
+            <a href="#playground" class="block py-2 text-slate-300 hover:text-brand-cyan font-medium">Interactive Demo</a>
+            <a href="#faq" class="block py-2 text-slate-300 hover:text-brand-cyan font-medium">FAQ</a>
+            <a href="#download" class="w-full text-center gradient-border-btn block mt-4">
+                <div class="bg-brand-dark px-5 py-3 rounded-full text-sm font-semibold flex items-center justify-center space-x-2 text-white">
+                    <i class="fa-brands fa-firefox-browser text-orange-500 text-lg"></i>
+                    <span>Add to Firefox (Free)</span>
+                </div>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden bg-grid-pattern">
+        <!-- Ambient Glowing Orbs -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-violet/20 rounded-full blur-[140px] pointer-events-none animate-pulse-glow"></div>
+        <div class="absolute top-1/3 left-1/4 w-[350px] h-[350px] bg-brand-cyan/15 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                
+                <!-- Hero Left Column Text -->
+                <div class="lg:col-span-7 text-center lg:text-left space-y-8">
+                    <!-- Badge -->
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-semibold tracking-wide uppercase shadow-inner">
+                        <span class="flex h-2 w-2 rounded-full bg-brand-cyan animate-ping"></span>
+                        <span>Firefox Exclusive Security Extension</span>
+                    </div>
+
+                    <!-- Main Heading -->
+                    <h1 class="font-heading text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+                        Take Control of Your Digital <span class="gradient-text">Focus & Privacy</span>
+                    </h1>
+
+                    <!-- Subtitle -->
+                    <p class="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto lg:mx-0 font-light leading-relaxed">
+                        Instantly password-protect or lock any domain, social feed, or specific web page. Set custom timers, custom schedules, and enable stealth mode to keep distractors and snoops away.
+                    </p>
+
+                    <!-- Hero Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#download" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 via-amber-500 to-amber-600 text-white font-bold text-base hover:shadow-lg hover:shadow-orange-500/25 hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3 group">
+                            <i class="fa-brands fa-firefox-browser text-2xl group-hover:rotate-12 transition-transform"></i>
+                            <span>Add to Firefox — Free</span>
+                        </a>
+                        <a href="#playground" class="w-full sm:w-auto px-8 py-4 rounded-full glass-card hover:bg-slate-800/80 text-white font-medium text-base border border-slate-700/80 transition-all flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-play text-brand-cyan text-xs"></i>
+                            <span>Try Simulator</span>
+                        </a>
+                    </div>
+
+                    <!-- Trust indicators -->
+                    <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-slate-400 text-xs sm:text-sm">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                            <span>Zero Data Collection</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-bolt text-brand-cyan"></i>
+                            <span>Instant Setup (< 1 min)</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-star text-amber-400"></i>
+                            <span>4.9 / 5 Rating</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Right Column Interactive Preview Card -->
+                <div class="lg:col-span-5">
+                    <div class="relative mx-auto max-w-md lg:max-w-none">
+                        <!-- Neon Glow effect around frame -->
+                        <div class="absolute -inset-1 bg-gradient-to-r from-brand-violet via-brand-cyan to-indigo-600 rounded-2xl blur-lg opacity-40 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-border-glow"></div>
+                        
+                        <!-- Mock Browser Window -->
+                        <div class="relative rounded-2xl glass-card bg-brand-dark/90 border border-slate-700/80 shadow-2xl overflow-hidden">
+                            <!-- Browser Top Bar -->
+                            <div class="px-4 py-3 bg-slate-900/90 border-b border-slate-800 flex items-center space-x-3">
+                                <div class="flex space-x-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                                </div>
+                                <div class="flex-1 bg-slate-800/80 rounded-md px-3 py-1 flex items-center text-xs text-slate-400 justify-between">
+                                    <span class="flex items-center space-x-1 truncate">
+                                        <i class="fa-solid fa-lock text-brand-cyan text-[10px]"></i>
+                                        <span id="heroLockUrl">reddit.com</span>
+                                    </span>
+                                    <i class="fa-solid fa-rotate-right text-[10px] text-slate-500"></i>
+                                </div>
+                            </div>
+
+                            <!-- Mock Locked Website Body -->
+                            <div class="relative p-8 min-h-[320px] flex flex-col items-center justify-center text-center bg-gradient-to-b from-brand-dark to-slate-950">
+                                
+                                <!-- Lock State Content -->
+                                <div id="heroLockedState" class="space-y-4 w-full max-w-xs transition-all duration-300">
+                                    <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-brand-violet to-brand-cyan p-0.5 shadow-xl shadow-brand-violet/30 animate-float">
+                                        <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center">
+                                            <i class="fa-solid fa-lock text-2xl text-brand-cyan"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-white">Access Restricted</h3>
+                                        <p class="text-xs text-slate-400 mt-1">This domain is locked by <span class="text-slate-200 font-semibold">Lock Any Website</span>.</p>
+                                    </div>
+
+                                    <!-- Password Input Demo -->
+                                    <div class="space-y-2 pt-2">
+                                        <div class="relative">
+                                            <input type="password" id="heroPassInput" placeholder="Enter password (try: 1234)" class="w-full bg-slate-900/90 border border-slate-700 focus:border-brand-cyan rounded-xl px-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-brand-cyan transition-all text-center">
+                                        </div>
+                                        <button onclick="unlockHeroDemo()" class="w-full bg-gradient-to-r from-brand-violet to-brand-cyan hover:opacity-90 text-white font-semibold py-2.5 rounded-xl text-xs transition-all shadow-md shadow-brand-cyan/10">
+                                            Unlock Page
+                                        </button>
+                                        <p id="heroDemoMsg" class="text-[11px] text-slate-500 font-mono h-4">Hint: default PIN is 1234</p>
+                                    </div>
+                                </div>
+
+                                <!-- Unlocked State Content (Hidden by default) -->
+                                <div id="heroUnlockedState" class="hidden space-y-4 w-full max-w-xs transition-all duration-300">
+                                    <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/20 border border-emerald-500/40 p-0.5 shadow-xl shadow-emerald-500/20 flex items-center justify-center">
+                                        <i class="fa-solid fa-lock-open text-3xl text-emerald-400"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-white">Access Granted!</h3>
+                                        <p class="text-xs text-emerald-400 mt-1">Website unlocked successfully.</p>
+                                    </div>
+                                    <button onclick="resetHeroDemo()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2 rounded-xl text-xs border border-slate-700 transition-all">
+                                        Re-lock Demo
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid Section -->
+    <section id="features" class="py-24 relative z-10 border-t border-brand-border bg-slate-950/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-brand-cyan">Uncompromised Control</h2>
+                <p class="font-heading text-3xl sm:text-4xl font-extrabold text-white">Built for High Focus & Absolute Privacy</p>
+                <p class="text-slate-400 text-base">Packed with enterprise-grade protection features designed seamlessly into an intuitive Firefox extension interface.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Feature 1 -->
+                <div class="glass-card rounded-2xl p-8 relative group transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-brand-cyan/10 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan text-xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Instant Domain Lock</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Lock entire domains or specific URL sub-paths with a single right-click or shortcut. Custom passcode overlays block contents instantly before loading.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="glass-card rounded-2xl p-8 relative group transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-brand-violet/20 border border-brand-violet/40 flex items-center justify-center text-brand-violet text-xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Smart Time Schedules</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Schedule automatic website locks during your work or study hours (e.g., block social media Monday to Friday between 9 AM and 5 PM).
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="glass-card rounded-2xl p-8 relative group transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-user-ninja"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Stealth Mode</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Hide the extension icon from Firefox toolbar and disguises block screens to prevent unauthorized users from suspecting a lock plugin is active.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="glass-card rounded-2xl p-8 relative group transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-shield-cat"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Break-Proof Security</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Prevent easy bypass attempts. Require master password authorization to access Firefox extension settings or disable/uninstall extensions.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="glass-card rounded-2xl p-8 relative group transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-grip-vertical"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">PIN, Pattern & Text Passwords</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Choose your preferred unlocking style: classic text passwords, quick 4-digit PIN numbers, or visual pattern lock combinations.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="glass-card rounded-2xl p-8 relative group transition-all duration-300 hover:-translate-y-1">
+                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-chart-pie"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Block Insights & Analytics</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Track how many times you avoided distracting websites and inspect unauthorized access attempts with privacy-focused local logs.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-brand-cyan">Simple Setup</h2>
+                <p class="font-heading text-3xl sm:text-4xl font-extrabold text-white">3 Simple Steps to Complete Focus</p>
+                <p class="text-slate-400 text-base">Get up and running in less than 60 seconds with no complex configuration required.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                <!-- Step Line Connector (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-brand-violet via-brand-cyan to-brand-violet -translate-y-8 z-0 opacity-30"></div>
+
+                <!-- Step 1 -->
+                <div class="glass-card rounded-2xl p-8 text-center relative z-10 flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-brand-cyan/40 text-brand-cyan flex items-center justify-center font-heading font-extrabold text-2xl mb-6 shadow-lg shadow-brand-cyan/10">
+                        1
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Install Firefox Extension</h3>
+                    <p class="text-slate-400 text-sm">
+                        Add <span class="text-slate-200 font-semibold">Lock Any Website</span> directly from the official Firefox Add-ons store with one click.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="glass-card rounded-2xl p-8 text-center relative z-10 flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-brand-violet/40 text-brand-violet flex items-center justify-center font-heading font-extrabold text-2xl mb-6 shadow-lg shadow-brand-violet/10">
+                        2
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Set Your Master Passcode</h3>
+                    <p class="text-slate-400 text-sm">
+                        Configure a secure master PIN or password that only you know to manage locked lists and unlock restricted pages.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="glass-card rounded-2xl p-8 text-center relative z-10 flex flex-col items-center">
+                    <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-heading font-extrabold text-2xl mb-6 shadow-lg shadow-emerald-500/10">
+                        3
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Lock Any Website</h3>
+                    <p class="text-slate-400 text-sm">
+                        Right-click on any webpage or enter URLs into your custom locklist to immediately password-protect access.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Extension Simulator Section -->
+    <section id="playground" class="py-24 relative z-10 border-t border-brand-border bg-slate-950/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-12">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-brand-cyan">Interactive Playground</h2>
+                <p class="font-heading text-3xl sm:text-4xl font-extrabold text-white">Test the Lock Simulator Live</p>
+                <p class="text-slate-400 text-base">Type any URL below to see how seamlessly the extension blocks unwanted access and protects your productivity.</p>
+            </div>
+
+            <!-- Playground Browser Frame -->
+            <div class="glass-card rounded-2xl border border-slate-700/80 shadow-2xl overflow-hidden max-w-4xl mx-auto">
+                <!-- Browser Header Bar -->
+                <div class="bg-slate-900/90 px-4 py-3 border-b border-slate-800 flex flex-col sm:flex-row items-center gap-3">
+                    <div class="flex space-x-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+
+                    <!-- URL Input Box -->
+                    <form id="simUrlForm" class="flex-1 w-full flex items-center space-x-2 bg-slate-800/90 rounded-lg px-3 py-1.5 border border-slate-700 focus-within:border-brand-cyan transition-colors">
+                        <i class="fa-solid fa-globe text-slate-400 text-xs"></i>
+                        <span class="text-xs text-slate-500 select-none">https://</span>
+                        <input type="text" id="simUrlInput" value="youtube.com" class="bg-transparent text-xs text-white focus:outline-none flex-1 font-mono" placeholder="enter domain e.g. twitter.com">
+                        <button type="submit" class="bg-brand-violet hover:bg-brand-purple text-white text-[11px] px-3 py-1 rounded-md font-medium transition-colors">
+                            Lock & Test
+                        </button>
+                    </form>
+
+                    <!-- Extension Badge Icon -->
+                    <div class="hidden sm:flex items-center space-x-2 text-xs text-slate-400 bg-slate-800 px-2.5 py-1 rounded-md border border-slate-700">
+                        <i class="fa-solid fa-shield-halved text-brand-cyan"></i>
+                        <span>Extension Active</span>
+                    </div>
+                </div>
+
+                <!-- Simulation Viewport -->
+                <div class="relative min-h-[380px] bg-slate-950 flex flex-col items-center justify-center p-6 sm:p-12 text-center">
+                    
+                    <!-- Lock Overlay Window -->
+                    <div id="simLockedCard" class="w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-2xl p-8 shadow-2xl space-y-6">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-rose-500 to-brand-violet p-0.5 shadow-xl shadow-rose-500/20">
+                            <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
+                                <i class="fa-solid fa-lock-keyhole text-2xl text-rose-400"></i>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-[11px] font-mono uppercase tracking-wider text-rose-400 font-semibold bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-500/20">Protected Page</span>
+                            <h3 id="simDisplayUrl" class="text-xl font-bold text-white mt-3 font-mono">https://youtube.com</h3>
+                            <p class="text-xs text-slate-400 mt-1">Passcode required to continue browsing this domain.</p>
+                        </div>
+
+                        <div class="space-y-3">
+                            <input type="password" id="simPassInput" placeholder="Enter PIN (Demo: 0000)" class="w-full bg-slate-950 border border-slate-700 focus:border-brand-cyan rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none text-center font-mono tracking-widest">
+                            
+                            <button onclick="testSimUnlock()" class="w-full bg-gradient-to-r from-brand-violet to-brand-cyan hover:opacity-90 text-white font-bold py-3 rounded-xl text-sm transition-all shadow-lg shadow-brand-cyan/20">
+                                Unlock Website
+                            </button>
+                            <p id="simFeedback" class="text-xs font-mono text-slate-500 h-4">Demo PIN: 0000</p>
+                        </div>
+                    </div>
+
+                    <!-- Simulator Unlocked Success State (Hidden) -->
+                    <div id="simUnlockedCard" class="hidden w-full max-w-md bg-slate-900/90 border border-emerald-500/30 rounded-2xl p-8 shadow-2xl space-y-6">
+                        <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-3xl">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Website Unlocked!</h3>
+                            <p class="text-xs text-slate-400 mt-1">You now have temporary access to <span id="simUnlockedUrl" class="text-brand-cyan font-mono">youtube.com</span>.</p>
+                        </div>
+                        <button onclick="resetSim()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium py-2.5 rounded-xl text-xs border border-slate-700 transition-all">
+                            Test Another URL
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-24 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-brand-cyan">Loved by Firefox Users</h2>
+                <p class="font-heading text-3xl sm:text-4xl font-extrabold text-white">What Users Are Saying</p>
+                <p class="text-slate-400 text-base">Trusted by developers, students, and professionals to eliminate digital distractions.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="glass-card rounded-2xl p-8 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="flex text-amber-400 space-x-1 text-sm">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic">
+                            "Finally a website blocker on Firefox that actually works without loopholes! The schedule feature saved my college semester."
+                        </p>
+                    </div>
+                    <div class="pt-6 border-t border-brand-border flex items-center space-x-3 mt-6">
+                        <div class="w-10 h-10 rounded-full bg-brand-violet/40 flex items-center justify-center font-bold text-white">
+                            EM
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-white">Elena M.</p>
+                            <p class="text-xs text-slate-500">Computer Science Student</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="glass-card rounded-2xl p-8 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="flex text-amber-400 space-x-1 text-sm">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic">
+                            "The stealth mode feature is amazing. I can lock sensitive work admin panels on my shared browser seamlessly."
+                        </p>
+                    </div>
+                    <div class="pt-6 border-t border-brand-border flex items-center space-x-3 mt-6">
+                        <div class="w-10 h-10 rounded-full bg-brand-cyan/40 flex items-center justify-center font-bold text-white">
+                            DR
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-white">David R.</p>
+                            <p class="text-xs text-slate-500">Remote Software Engineer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="glass-card rounded-2xl p-8 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="flex text-amber-400 space-x-1 text-sm">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-slate-300 text-sm leading-relaxed italic">
+                            "Extremely clean UI and lightweight. It doesn't slow down Firefox at all unlike other heavy security plugins."
+                        </p>
+                    </div>
+                    <div class="pt-6 border-t border-brand-border flex items-center space-x-3 mt-6">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500/40 flex items-center justify-center font-bold text-white">
+                            SK
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-white">Sarah K.</p>
+                            <p class="text-xs text-slate-500">Digital Marketer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-24 relative z-10 border-t border-brand-border bg-slate-950/40">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center space-y-4 mb-16">
+                <h2 class="text-xs font-semibold uppercase tracking-widest text-brand-cyan">Questions & Answers</h2>
+                <p class="font-heading text-3xl sm:text-4xl font-extrabold text-white">Frequently Asked Questions</p>
+            </div>
+
+            <div class="space-y-4">
+                <!-- FAQ Item 1 -->
+                <div class="glass-card rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(1)" class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-white text-base">Is Lock Any Website completely free?</span>
+                        <i id="faqIcon-1" class="fa-solid fa-chevron-down text-brand-cyan transition-transform duration-200"></i>
+                    </button>
+                    <div id="faqAnswer-1" class="hidden px-6 pb-5 text-slate-400 text-sm leading-relaxed">
+                        Yes! The core password locking, custom schedule features, and PIN protection are 100% free to use on Firefox.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="glass-card rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(2)" class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-white text-base">Does this extension collect or upload my browsing history?</span>
+                        <i id="faqIcon-2" class="fa-solid fa-chevron-down text-brand-cyan transition-transform duration-200"></i>
+                    </button>
+                    <div id="faqAnswer-2" class="hidden px-6 pb-5 text-slate-400 text-sm leading-relaxed">
+                        No. Privacy is our top priority. All locked website lists, passcodes, and settings are stored locally in your browser's encrypted Firefox storage. Nothing ever leaves your computer.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="glass-card rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(3)" class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-white text-base">What happens if I forget my master passcode?</span>
+                        <i id="faqIcon-3" class="fa-solid fa-chevron-down text-brand-cyan transition-transform duration-200"></i>
+                    </button>
+                    <div id="faqAnswer-3" class="hidden px-6 pb-5 text-slate-400 text-sm leading-relaxed">
+                        You can configure an optional recovery email or security hint question during initial setup. If enabled, password reset links can be dispatched to your recovery option safely.
+                    </div>
+                </div>
+
+                <!-- FAQ Item 4 -->
+                <div class="glass-card rounded-xl overflow-hidden">
+                    <button onclick="toggleFaq(4)" class="w-full px-6 py-5 text-left flex justify-between items-center focus:outline-none">
+                        <span class="font-semibold text-white text-base">Does it work in Private / Incognito Windows?</span>
+                        <i id="faqIcon-4" class="fa-solid fa-chevron-down text-brand-cyan transition-transform duration-200"></i>
+                    </button>
+                    <div id="faqAnswer-4" class="hidden px-6 pb-5 text-slate-400 text-sm leading-relaxed">
+                        Yes, as long as you grant "Run in Private Windows" permission to Lock Any Website inside Firefox Add-on Settings.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner Section -->
+    <section id="download" class="py-20 relative z-10 overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative rounded-3xl p-10 sm:p-16 text-center bg-gradient-to-r from-brand-violet/40 via-brand-dark to-brand-cyan/20 border border-brand-border backdrop-blur-xl shadow-2xl">
+                <div class="relative z-10 space-y-6">
+                    <h2 class="font-heading text-3xl sm:text-5xl font-extrabold text-white">
+                        Ready to Lock Out Distractions?
+                    </h2>
+                    <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto font-light">
+                        Join thousands of Firefox users who have reclaimed their productivity and privacy today.
+                    </p>
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="https://addons.mozilla.org" target="_blank" class="w-full sm:w-auto px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-amber-600 text-white font-bold text-base hover:shadow-xl hover:shadow-orange-500/30 hover:scale-105 transition-all flex items-center justify-center space-x-3">
+                            <i class="fa-brands fa-firefox-browser text-2xl"></i>
+                            <span>Add to Firefox Add-ons</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-brand-border bg-slate-950 py-12 relative z-10 text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-brand-violet flex items-center justify-center text-white">
+                    <i class="fa-solid fa-lock text-sm"></i>
+                </div>
+                <span class="font-heading font-bold text-white text-base">Lock Any Website</span>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+                <a href="#features" class="hover:text-brand-cyan transition-colors">Features</a>
+                <a href="#playground" class="hover:text-brand-cyan transition-colors">Demo</a>
+                <a href="#" onclick="openModal('privacyModal'); return false;" class="hover:text-brand-cyan transition-colors">Privacy Policy</a>
+                <a href="#" onclick="openModal('termsModal'); return false;" class="hover:text-brand-cyan transition-colors">Terms of Service</a>
+            </div>
+
+            <div class="text-xs text-slate-500">
+                &copy; <span id="yearSpan"></span> Lock Any Website. Built for Firefox.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Window (Privacy Policy) -->
+    <div id="privacyModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="glass-card bg-brand-dark max-w-lg w-full rounded-2xl p-6 border border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-white">Privacy Policy</h3>
+                <button onclick="closeModal('privacyModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="text-xs text-slate-300 space-y-3 max-h-60 overflow-y-auto pr-2">
+                <p><strong>Lock Any Website</strong> values your privacy above all else.</p>
+                <p>1. We do not collect, track, or sell your web browsing activity.</p>
+                <p>2. Passwords and domain locklists are stored securely on your local device using Firefox's browser storage APIs.</p>
+                <p>3. No external web analytics or telemetry trackers are injected into protected websites.</p>
+            </div>
+            <button onclick="closeModal('privacyModal')" class="w-full bg-brand-violet text-white py-2 rounded-xl text-xs font-semibold">Close</button>
+        </div>
+    </div>
+
+    <!-- Modal Window (Terms) -->
+    <div id="termsModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="glass-card bg-brand-dark max-w-lg w-full rounded-2xl p-6 border border-slate-700 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <h3 class="text-lg font-bold text-white">Terms of Service</h3>
+                <button onclick="closeModal('termsModal')" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="text-xs text-slate-300 space-y-3 max-h-60 overflow-y-auto pr-2">
+                <p>By using the Lock Any Website Firefox Extension, you agree to these terms:</p>
+                <p>1. The software is provided "as is" without warranty of any kind.</p>
+                <p>2. Users are responsible for remembering their configured passcodes.</p>
+            </div>
+            <button onclick="closeModal('termsModal')" class="w-full bg-brand-violet text-white py-2 rounded-xl text-xs font-semibold">Close</button>
+        </div>
+    </div>
+</body>
+</html>
